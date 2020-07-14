@@ -1,0 +1,28 @@
+{
+    "name": "genesis",
+    "sourceFolder": "src",
+    "moduleFolder": "modules",
+    "store": "store.js",
+    "router": "router.js",
+    "hardCopyBase": false,
+    "update": true,
+    "modules": [{
+        "name": "school",
+        "update": false,
+        "apis": {
+            "list": "school/list",
+            "detail": "school/detail",
+            "edit": "school/detail",
+            "delete": "school"
+        }
+    }, {
+        "name": "students",
+        "update": false,
+        "apis": {
+            "list": "students/list",
+            "get": "students/detail",
+            "edit": "students/detail",
+            "delete": "students"
+        }
+    }]
+}

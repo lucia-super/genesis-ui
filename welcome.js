@@ -18,6 +18,6 @@ router.post('/rebuild', (req, res) => {
 })
 
 app.use(router)
-app.use(express.static("gui"))
+app.use(express.static(__dirname))
 
 app.listen(port);

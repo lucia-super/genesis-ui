@@ -4,7 +4,7 @@ const path = require('path');
 
 
 function execCommand(data) {
-    var config = require('../../genesis.json');
+    var config = getConfigFile();
     config.modules = data;
 
     const isExist = fs.existsSync("../../genesis.json");
@@ -25,10 +25,19 @@ function execCommand(data) {
 }
 
 function getModules() {
-    var config = require('../../../genesis.json');
-    return config.modules;
+    return getConfigFile().modules;
 }
 
+function getConfigFile() {
+    const isExist = fs.existsSync("../../genesis.json");
+    if (isExist) {
+        var config = require('../../genesis.json');
+        return config;
+    } else {
+        var config = require('../../../genesis.json');
+        return config;
+    }
+}
 
 module.exports = {
     execCommand, getModules
