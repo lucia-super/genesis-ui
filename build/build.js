@@ -25,7 +25,7 @@ function execCommand(data) {
 }
 
 function getModules() {
-    var config = require('../../genesis.json');
+    var config = require('../../../genesis.json');
     return config.modules;
 }
 

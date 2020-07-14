@@ -92,7 +92,7 @@ function renderAllNodes(data) {
     data.forEach(element => {
         allNodes += `<tr class="pure-table-odd">
                         <td>${element.name}</td>
-                        <td>${element.name}</td>
+                        <td>${element.title}</td>
                     </tr>`
     });
     $("#modulesTable>tbody").html(allNodes);
