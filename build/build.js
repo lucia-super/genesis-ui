@@ -6,20 +6,23 @@ const path = require('path');
 function execCommand(data) {
     var config = getConfigFile();
     config.modules = data;
-
-    const isExist = fs.existsSync("../../genesis.json");
     fs.writeFile("genesis.json", JSON.stringify(config), (error) => {
         if (!error) {
-            console.log("getModules : ", JSON.stringify(getModules()))
+            const isExist = fs.existsSync("node_modules/genesis-tools/index.js");
+            console.log("getModules : ", isExist);
 
-            exec('node node_modules/genesis-tools/index.js', (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`执行的错误: ${error}`);
-                    return;
-                } else {
-                    console.log(`stdout && stderr: ${stdout} ${stderr}`);
-                }
-            });
+            if (isExist) {
+                exec('node node_modules/genesis-tools/index.js', (error, stdout, stderr) => {
+                    if (error) {
+                        console.error(`执行的错误: ${error}`);
+                        return;
+                    } else {
+                        console.log(`stdout && stderr: ${stdout} ${stderr}`);
+                    }
+                });
+            } else {
+                console.warn("*** warnning: Please use this tool based on a real project.");
+            }
         }
     })
 }
@@ -29,12 +32,12 @@ function getModules() {
 }
 
 function getConfigFile() {
-    const isExist = fs.existsSync("../../genesis.json");
+    const isExist = fs.existsSync("../../../genesis.json");
     if (isExist) {
-        var config = require('../../genesis.json');
+        var config = require('../../../genesis.json');
         return config;
     } else {
-        var config = require('../../../genesis.json');
+        var config = require('../genesis.json');
         return config;
     }
 }

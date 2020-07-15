@@ -1,28 +1,26 @@
+// global
 document.write("<script language=javascript src='server/request.js'></script>");
-window.addEventListener('load', function () {
-    // Fetch all the forms we want to apply custom Bootstrap validation styles to
-    var forms = document.getElementsByClassName('needs-validation');
-    // Loop over them and prevent submission
-    var validation = Array.prototype.filter.call(forms, function (form) {
-        form.addEventListener('submit', function (event) {
-            if (form.checkValidity() === false) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            form.classList.add('was-validated');
-        }, false);
-    });
-}, false);
-
-$.ajaxSetup({
-    header: { "Content-Type": "application/json;charset=UTF-8" },
-    beforeSend: function (request) {
-        request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    },
-});
-
 $(document).ready(function () {
-    getModulesData();
+    $.ajaxSetup({
+        header: { "Content-Type": "application/json;charset=UTF-8" },
+        beforeSend: function (request) {
+            request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        },
+    });
+    window.addEventListener('load', function () {
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.getElementsByClassName('needs-validation');
+        // Loop over them and prevent submission
+        var validation = Array.prototype.filter.call(forms, function (form) {
+            form.addEventListener('submit', function (event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
     $.fn.serializeJson = function () {
         var serializeObj = {};
         var array = this.serializeArray();
@@ -42,8 +40,29 @@ $(document).ready(function () {
             });
         return serializeObj;
     };
-});
 
+    var $table = $('#modulesTable')
+    var $removeModule = $('#removeModule')
+    $table.on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', function () {
+        $removeModule.prop('disabled', !$table.bootstrapTable('getSelections').length)
+    })
+
+    $("#fieldsTable").bootstrapTable({ data: [] })
+});
+// main page
+function deleteModule() {
+    var $table = $('#modulesTable')
+    var names = $.map($table.bootstrapTable('getSelections'), function (row) {
+        return row.name
+    })
+    $table.bootstrapTable('remove', {
+        field: 'name',
+        values: names
+    })
+    updateModulesData($table.bootstrapTable('getData'))
+}
+
+// add and edit form
 function addNewsModule() {
     const formElement = document.getElementById("newData");
 
@@ -52,51 +71,36 @@ function addNewsModule() {
         event.stopPropagation();
     }
     formElement.classList.add('was-validated');
-    if ($(".form-control:invalid").length === 0) {
-        //$("#fieldsTable>tbody>tr")
-        const allFileds = $("#fieldsTable>tbody")[0].children;
-        const fields = [];
-        for (let i = 0; i < allFileds.length; i++) {
-            const item = allFileds[i];
-            fields.push({
-                key: $(item).find("td:first").text(),
-                name: $(item).find("td:last").text()
-            })
-        }
-
+    if ($("#newData .form-control:invalid").length === 0) {
+        const fields = $("#fieldsTable").bootstrapTable("getData")
+        const needAddData = $("#newData").serializeJson()
+        var $table = $('#modulesTable')
         const newItem = {
-            "name": formElement.moduleID.value,
-            "title": formElement.moduleName.value,
+            "name": needAddData.moduleID,
+            "title": needAddData.moduleName,
             "update": false,
             "apis": {
-                "list": formElement.list.value,
-                "detail": formElement.detail.value,
-                "edit": formElement.edit.value,
-                "delete": formElement.delete.value,
+                "list": needAddData.list,
+                "detail": needAddData.detail,
+                "edit": needAddData.edit,
+                "delete": needAddData.delete,
             },
             fields: fields
         }
-        this.data.push(newItem);
-        // update data
-        updateModulesData(this.data, (responseData) => {
-            this.data = responseData;
-            renderAllNodes(this.data);
+        const allModules = $table.bootstrapTable('getData')
+        allModules.push(newItem)
+        updateModulesData(allModules, () => {
+            $('#addNewModule').modal('hide')
+            $table.bootstrapTable("refresh")
+            $("#newData")[0].reset()
+            $("#fieldsTable").bootstrapTable('removeAll')
         })
     } else {
         alert("please check fields")
     }
 }
 
-function renderAllNodes(data) {
-    let allNodes = "";
-    data.forEach(element => {
-        allNodes += `<tr class="pure-table-odd">
-                        <td>${element.name}</td>
-                        <td>${element.title}</td>
-                    </tr>`
-    });
-    $("#modulesTable>tbody").html(allNodes);
-}
+
 
 function recommendApis() {
     const formElement = document.getElementById("newData");
@@ -108,30 +112,27 @@ function recommendApis() {
     formElement.delete.value = name;
 }
 
-function deleteModule() {
-    document.getElementById("modulesTable").deleteRow(3);
-}
-
 function addNewsFields() {
     const addFieldsForm = $("#addFieldsForm");
-    if (addFieldsForm.hasClass("visible")) {
-
-        // const formElement = document.getElementById("addFieldsForm");
-        // if (formElement.checkValidity() === false) {
-        //     event.preventDefault();
-        //     event.stopPropagation();
-        // }
-        // formElement.classList.add('was-validated');
-        // if ($(".form-control:invalid").length === 0) {
-        const addObj = addFieldsForm.serializeJson();
-        $("#fieldsTable>tbody").append(`<tr class="pure-table-odd"><td>${addObj.Key}</td><td>${addObj.Name}</td></tr>`);
-        addFieldsForm.removeClass("visible");
-        addFieldsForm.addClass("invisible");
-        // } else {
-        //     alert("please check fields")
-        // }
+    if (addFieldsForm.attr("hidden")) {
+        addFieldsForm.removeAttr("hidden")
     } else {
-        addFieldsForm.addClass("visible");
-        addFieldsForm.removeClass("invisible");
+        const formElement = document.getElementById("addFieldsForm");
+        if (formElement.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        formElement.classList.add('was-validated');
+        if ($("#addFieldsForm .form-control:invalid").length === 0) {
+            addFieldsForm.attr("hidden", "hidden")
+            const data = addFieldsForm.serializeJson();
+            $("#fieldsTable").bootstrapTable('insertRow', {
+                index: 1,
+                row: data
+            })
+            addFieldsForm[0].reset()
+        } else {
+            alert("please check fields")
+        }
     }
 }
