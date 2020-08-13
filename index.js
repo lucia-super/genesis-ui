@@ -93,6 +93,7 @@ function addNewsModule() {
             $('#addNewModule').modal('hide')
             $table.bootstrapTable("refresh")
             $("#newData")[0].reset()
+            $("#newData").removeAttr("class")
             $("#fieldsTable").bootstrapTable('removeAll')
         })
     } else {
@@ -130,7 +131,8 @@ function addNewsFields() {
                 index: 1,
                 row: data
             })
-            addFieldsForm[0].reset()
+            addFieldsForm[0].reset();
+            addFieldsForm.removeAttr("class")
         } else {
             alert("please check fields")
         }
