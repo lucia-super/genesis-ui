@@ -1,9 +1,5 @@
 <template>
   <div>
-    <el-row>
-      <el-breadcrumb-item :to="{ name: 'Home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-    </el-row>
     <el-card class="box-card">
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="模块ID">
@@ -41,7 +37,9 @@
         </el-card>
       </el-form>
     </el-card>
-    <el-button @click="onBack()">返回</el-button>
+    <el-row type="flex" class="row-bg" justify="end">
+      <el-button @click="onBack()">返回</el-button>
+    </el-row>
   </div>
 </template>
 
@@ -73,6 +71,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .el-row {
-  margin-bottom: 20px;
+  margin-top: 20px;
 }
 </style>

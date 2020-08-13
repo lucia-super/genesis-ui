@@ -8,7 +8,7 @@
         <el-button type="primary" @click="onSubmit">查询</el-button>
       </el-form-item>
     </el-form>
-    <el-row>
+    <el-row type="flex" class="row-bg" justify="end">
       <el-button @click="handleClickAdd" type="success">添加</el-button>
     </el-row>
     <el-table
@@ -24,7 +24,7 @@
       <el-table-column fixed="right" label="操作" width="200">
         <template slot-scope="scope">
           <el-button @click="handleClickView(scope.row)" type="text" size="small">查看</el-button>
-          <el-button type="text" size="small">编辑</el-button>
+          <el-button @click="handleClickEdit(scope.row)" type="text" size="small">编辑</el-button>
           <el-popconfirm
             confirmButtonText="确定"
             cancelButtonText="取消"
@@ -72,6 +72,9 @@ export default {
     },
     handleClickView(data) {
       this.$router.push({ name: "Detail", params: { data } });
+    },
+    handleClickEdit(data) {
+      this.$router.push({ name: "Edit", params: { data } });
     },
     handleClickDelete(data) {
       const updateData = [];

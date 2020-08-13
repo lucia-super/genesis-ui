@@ -1,5 +1,4 @@
 import axios from 'axios';
-const HOST = "http://127.0.0.1:3000";
 export default {
     state: {
         loading: true,
