@@ -1,1 +1,38 @@
-{"name":"genesis","sourceFolder":"src","moduleFolder":"modules","store":"store.js","router":"router.js","hardCopyBase":false,"update":true,"modules":[{"name":"school","title":"学校2","apis":{"list":"school/list","detail":"school/detail","edit":"school/detail","delete":"school"},"fields":[]}]}
+{
+    "name": "genesis",
+    "sourceFolder": "src",
+    "moduleFolder": "modules",
+    "store": "store.js",
+    "router": "router.js",
+    "hardCopyBase": false,
+    "update": true,
+    "modules": [{
+        "name": "test",
+        "title": "测试",
+        "apis": {
+            "list": "test/listAll",
+            "detail": "test/detail",
+            "edit": "test/detail",
+            "delete": "test"
+        },
+        "fields": [{
+            "key": "test",
+            "name": "测试",
+            "type": "number"
+        }]
+    }, {
+        "name": "school",
+        "title": "学校",
+        "apis": {
+            "list": "school/list",
+            "detail": "school/detail",
+            "edit": "school/detail",
+            "delete": "school"
+        },
+        "fields": [{
+            "key": "name",
+            "name": "名称",
+            "type": "string"
+        }]
+    }]
+}
